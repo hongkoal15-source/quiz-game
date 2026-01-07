@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>퀴즈 게임</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#111; color:#fff; text-align:center; }
+    input, button { font-size:16px; padding:8px; }
+    .box { max-width:500px; margin:40px auto; padding:20px; border:1px solid #444; border-radius:10px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>퀴즈 게임</h1>
+    <p id="question"></p>
+    <input id="answer" placeholder="정답 입력 (서술형)" />
+    <br><br>
+    <button onclick="submitAnswer()">제출</button>
+    <p id="result"></p>
+    <p>점수: <span id="score">0</span></p>
+    <p>연속 정답: <span id="combo">0</span></p>
+    <p>등급: <span id="rank">나무</span></p>
+  </div>
+
+  <script>
+    const quiz = [
+      { q: "대한민국의 수도는?", a: "서울" },
+      { q: "지구에서 가장 큰 바다는?", a: "태평양" },
+      { q: "1+1은?", a: "2" }
+    ];
+
+    let score = 0;
+    let combo = 0;
+    let current = 0;
+
+    function normalize(text) {
+      return text.replace(/\s/g, "");
+    }
+
+    function getRank(s) {
+      if (s >= 10000) return "신";
+      if (s >= 1000) return "우주";
+      if (s >= 300) return "방사능 물질";
+      if (s >= 200) return "그랜드 핑크 다이아";
+      if (s >= 150) return "블루 다이아";
+      if (s >= 100) return "레드 다이아";
+      if (s >= 66) return "다이아";
+      if (s >= 50) return "플래티넘";
+      if (s >= 30) return "골드";
+      if (s >= 20) return "실버";
+      if (s >= 10) return "브론즈";
+      return "나무";
+    }
+
+    function loadQuestion() {
+      document.getElementById("question").innerText = quiz[current].q;
+      document.getElementById("answer").value = "";
+    }
+
+    function submitAnswer() {
+      const user = normalize(document.getElementById("answer").value);
+      const correct = normalize(quiz[current].a);
+
+      if (user === correct) {
+        combo++;
+        score += combo;
+        document.getElementById("result").innerText = `정답! +${combo}점`;
+      } else {
+        combo = 0;
+        document.getElementById("result").innerText = "틀림!";
+      }
+
+      document.getElementById("score").innerText = score;
+      document.getElementById("combo").innerText = combo;
+      document.getElementById("rank").innerText = getRank(score);
+
+      current = (current + 1) % quiz.length;
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
